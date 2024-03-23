@@ -1,0 +1,22 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="../../css/spectre.min.css">
+</head>
+
+<body>
+    <H1>RSS Configuration</H1>
+
+    <script src="../../core/lib/customize.js"></script>
+
+    <script>
+        function onInit(device) {
+            Puck.eval("Bangle.http(\"https://en.wikipedia.org/w/index.php?title=Special:NewPages&feed=rss\"", data => {
+                console.log(data);
+            });
+        }
+
+    </script>
+</body>
+
+</html>
