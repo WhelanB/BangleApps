@@ -1,10 +1,12 @@
-{ 
-  "id": "rss",
+{ "id": "rss",
   "name": "RSS Reader",
-  "shortName" : "RSS",
+  "shortName":"RSS",
+  "version":"0.01",
+  "description": "A rough and ready RSS Reader for Bangle",
   "icon": "app.png",
-  "description": "A rough and ready RSS Reader for Bangle.JS",
   "tags": "",
+  "supports" : ["BANGLEJS2"],  
+  "readme": "README.md",
   "storage": [
     {"name":"rss.app.js","url":"app.js"},
     {"name":"rss.img","url":"app-icon.js","evaluate":true}
