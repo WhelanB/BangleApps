@@ -6,13 +6,14 @@
 
 <body>
     <H1>RSS Configuration</H1>
+    <p id="rss"></p>
 
     <script src="../../core/lib/customize.js"></script>
 
     <script>
         function onInit(device) {
             Puck.eval("Bangle.http(\"https://en.wikipedia.org/w/index.php?title=Special:NewPages&feed=rss\"", data => {
-                console.log(data);
+                document.getElementById('rss').innerHTML = data;
             });
         }
 
