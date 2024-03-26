@@ -1,21 +1,85 @@
 <html>
 
 <head>
-    <link rel="stylesheet" href="../../css/spectre.min.css">
+    <link rel="stylesheet" href="https://whelanb.github.io/BangleApps/css/spectre.min.css">
+    <link rel="stylesheet" href="https://banglejs.com/apps/css/spectre-icons.min.css">
 </head>
 
 <body>
     <H1>RSS Configuration</H1>
     <p id="rss"></p>
+    <label class="label">Feed Name:</label>
+    <input class="form-input" id="name" type="text"></input>
+    <label class="label">Feed Url:</label>
+    <input class="form-input" id="url" type="text"></input>
+    <p>Document Fields and Order:</p>
+    <cite>The fields that map to title, body and link in the app, and the order they appear in the RSS document</cite>
+    <ul id="items">
+        <li data-id="title" style="display: grid; grid-template-columns: 1fr 2fr;"><label class="c-move">⇅ Title:</label><input
+                id="titleText" type="text" class="form-input"></input></li>
+        <li data-id="body" style="display: grid; grid-template-columns: 1fr 2fr;"><label class="c-move">⇅ Body:</label><input
+                id="bodyText" type="text" class="form-input"></input></li>
+        <li data-id="link" style="display: grid; grid-template-columns: 1fr 2fr;"><label class="c-move">⇅ Link:</label><input
+                id="linkText" type="text" class="form-input"></input></li>
+    </ul>
+    <code id="order"></code>
+    <br>
+    <br>
+    <button class="btn btn-primary" onclick="save()">Save</button>
+
+    <div id="loading" class="empty">
+        <div class="empty-icon">
+            <div class="loading loading-lg"></div>
+          </div>
+        <p class="empty-title h5">Fetching</p>
+        <p class="empty-subtitle">Downloading your RSS feeds from device</p>
+    </div>
+
+    <div id="empty" class="empty" style="display:none">
+        <div class="empty-icon">
+            <div class="loading loading-lg"></div>
+          </div>
+        <p class="empty-title h5">No RSS Feeds</p>
+        <p class="empty-subtitle">Use the form above to add a new RSS feed</p>
+    </div>
+
+    <div id="feeds" class="empty" style="display:none">
+        <p class="empty-subtitle">Use the form above to add a new RSS feed</p>
+    </div>
 
     <script src="../../core/lib/customize.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <script>
+        var feeds = [];
+        var el = document.getElementById('items');
+        var sortable = Sortable.create(el, {
+            onUpdate: (evt) => document.getElementById('order').innerText = sortable.toArray(),
+            filter: 'input,select,textarea,button,fieldset,legend,datalist,output,option,optgroup',
+            preventOnFilter: false,
+        });
         function onInit(device) {
-            Puck.eval("Bangle.http(\"https://en.wikipedia.org/w/index.php?title=Special:NewPages&feed=rss\"", data => {
-                document.getElementById('rss').innerHTML = data;
-            });
+            Util.readStorageJSON("rss.feeds.json",(arr) => feeds = arr);
         }
+
+        var feed = {}
+        function save() {
+            feed.displayName = document.getElementById('name').value;
+            feed.url = document.getElementById('url').value;
+            feed.config = {
+                feedTag: "channel",
+                itemTag: "item",
+                titleTag: document.getElementById('titleText').value,
+                bodyTag: document.getElementById('bodyText').value,
+                linkTag: document.getElementById('linkText').value,
+                order: sortable.toArray(),
+            };
+            feeds.push(feed);
+            feeds = [...new Set(feeds)];
+            document.getElementById('order').innerText = JSON.stringify(feeds);
+        }
+
+
+
 
     </script>
 </body>
