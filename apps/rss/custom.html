@@ -1,56 +1,68 @@
 <html>
 
 <head>
-    <link rel="stylesheet" href="https://whelanb.github.io/BangleApps/css/spectre.min.css">
+    <link rel="stylesheet" href="https://banglejs.com/apps/css/spectre.min.css">
     <link rel="stylesheet" href="https://banglejs.com/apps/css/spectre-icons.min.css">
 </head>
 
 <body>
     <H1>RSS Configuration</H1>
     <p id="rss"></p>
-    <label class="label">Feed Name:</label>
-    <input class="form-input" id="name" type="text"></input>
-    <label class="label">Feed Url:</label>
-    <input class="form-input" id="url" type="text"></input>
-    <p>Document Fields and Order:</p>
-    <cite>The fields that map to title, body and link in the app, and the order they appear in the RSS document</cite>
-    <ul id="items">
-        <li data-id="title" style="display: grid; grid-template-columns: 1fr 2fr;"><label class="c-move">⇅ Title:</label><input
-                id="titleText" type="text" class="form-input"></input></li>
-        <li data-id="body" style="display: grid; grid-template-columns: 1fr 2fr;"><label class="c-move">⇅ Body:</label><input
-                id="bodyText" type="text" class="form-input"></input></li>
-        <li data-id="link" style="display: grid; grid-template-columns: 1fr 2fr;"><label class="c-move">⇅ Link:</label><input
-                id="linkText" type="text" class="form-input"></input></li>
-    </ul>
-    <code id="order"></code>
-    <br>
-    <br>
-    <button class="btn btn-primary" onclick="save()">Save</button>
+    <form id="feedForm">
+        <label class="label">Feed Name:</label>
+        <input class="form-input" id="name" type="text" required></input>
+        <label class="label">Feed Url:</label>
+        <input class="form-input" id="url" type="url" required></input>
+        <p>Document Fields and Order:</p>
+        <cite>The fields that map to title, body and link in the app, and the order they appear in the RSS
+            document</cite>
+        <ul id="items">
+            <li data-id="title" style="display: grid; grid-template-columns: 1fr 2fr;"><label class="c-move">⇅
+                    Title:</label><input id="titleText" type="text" class="form-input" value="title"></input></li>
+            <li data-id="body" style="display: grid; grid-template-columns: 1fr 2fr;"><label class="c-move">⇅
+                    Body:</label><input id="bodyText" type="text" class="form-input" value="body"></input></li>
+            <li data-id="link" style="display: grid; grid-template-columns: 1fr 2fr;"><label class="c-move">⇅
+                    Link:</label><input id="linkText" type="text" class="form-input" value="link"></input></li>
+        </ul>
+        <code id="order"></code>
+        <br>
+        <br>
+        <input class="btn btn-primary" type="submit" value="Submit">
+    </form>
 
-    <div id="loading" class="empty">
-        <div class="empty-icon">
-            <div class="loading loading-lg"></div>
-          </div>
-        <p class="empty-title h5">Fetching</p>
-        <p class="empty-subtitle">Downloading your RSS feeds from device</p>
-    </div>
+    <div>
+        <div id="loading">
+            <div class="empty">
+                <div class="empty-icon">
+                    <div class="loading loading-lg"></div>
+                </div>
+                <p class="empty-title h5">Fetching</p>
+                <p class="empty-subtitle">Retrieving your RSS feed list from device</p>
+            </div>
+        </div>
+        <div id="empty" class="d-hide">
+            <div class="empty">
+                <div class="empty-icon">
+                    <i class="icon icon-more-horiz"></i>
+                </div>
+                <p class="empty-title h5">No RSS Feeds</p>
+                <p class="empty-subtitle">Use the form above to add a new RSS feed</p>
+            </div>
+        </div>
 
-    <div id="empty" class="empty" style="display:none">
-        <div class="empty-icon">
-            <div class="loading loading-lg"></div>
-          </div>
-        <p class="empty-title h5">No RSS Feeds</p>
-        <p class="empty-subtitle">Use the form above to add a new RSS feed</p>
-    </div>
-
-    <div id="feeds" class="empty" style="display:none">
-        <p class="empty-subtitle">Use the form above to add a new RSS feed</p>
+        <ul id="feedList"></ul>
     </div>
 
     <script src="../../core/lib/customize.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <script>
+        const form = document.querySelector("#feedForm");
+        form.addEventListener("submit", (event) => {
+            event.preventDefault();
+            saveFeed();
+        });
         var feeds = [];
+        var fetching = true;
         var el = document.getElementById('items');
         var sortable = Sortable.create(el, {
             onUpdate: (evt) => document.getElementById('order').innerText = sortable.toArray(),
@@ -58,11 +70,66 @@
             preventOnFilter: false,
         });
         function onInit(device) {
-            Util.readStorageJSON("rss.feeds.json",(arr) => feeds = arr);
+            Util.readStorageJSON("rss.feeds.json", (arr) => { if (arr) { feeds = feeds.concat(arr); } });
+            fetching = false; // TODO improve this
+            renderFeedList();
+        }
+        function toggleVisibility() {
+            let empty = document.getElementById("empty");
+            let loading = document.getElementById("loading");
+            if (feeds.length == 0) {
+                empty.setAttribute("class", "d-block");
+                loading.setAttribute("class", "d-hide");
+            }
+            else if (!fetching) {
+                loading.setAttribute("class", "d-block");
+                empty.setAttribute("class", "d-hide");
+            }
+            else {
+                loading.setAttribute("class", "d-hide");
+                empty.setAttribute("class", "d-hide");
+            }
+        }
+/**
+ * 
+ *                 
+                **/
+        function renderFeedList() {
+            toggleVisibility();
+            let list = document.getElementById("feedList");
+            list.innerHTML = "";
+            for (var i = 0; i < feeds.length; i++) {
+                var feed = feeds[i];
+                var li = document.createElement("li");
+                var label = document.createElement("label");
+                label.innerHTML = feed.displayName + "      ";
+                var deleteButton = document.createElement("button");
+                deleteButton.innerText = "Delete";
+                deleteButton.setAttribute("onclick", `deleteFeed(${i})`);
+                deleteButton.setAttribute("class", "btn btn-error");
+                li.appendChild(label);
+                li.appendChild(deleteButton);
+                list.appendChild(li);
+            }
+
         }
 
-        var feed = {}
-        function save() {
+        function deleteFeed(index) {
+            feeds.splice(index, 1);
+            renderFeedList(feeds);
+        }
+
+        function editFeed(index) {
+            // Fetch the feed to edit
+            var feedToEdit = feeds[index];
+            // Remove it from the feed list
+            feeds.splice(index, 1);
+        }
+
+        function saveFeed() {
+            const formData = new FormData(form);
+            console.log(JSON.stringify(formData));
+            var feed = {};
             feed.displayName = document.getElementById('name').value;
             feed.url = document.getElementById('url').value;
             feed.config = {
@@ -74,14 +141,33 @@
                 order: sortable.toArray(),
             };
             feeds.push(feed);
-            feeds = [...new Set(feeds)];
-            document.getElementById('order').innerText = JSON.stringify(feeds);
+
+            // TODO show an error message if the feed exists instead, otherwise add and return the index
+            //feeds = [...new Set(feeds)];
+            renderFeedList();
+            return true;
         }
 
 
 
 
     </script>
+    <template id="feed-tile" class="tile tile-centered">
+        <div class="tile-icon">
+            <div class="example-tile-icon">
+                <slot name="tile-icon"></slot>
+            </div>
+        </div>
+        <div class="tile-content">
+            <div class="tile-title"><slot name="tile-title">Title</slot></div>
+            <small class="tile-subtitle text-gray"><slot name="tile-title">url</slot></small>
+        </div>
+        <div class="tile-action">
+            <button class="btn btn-link">
+                <i class="icon icon-more-vert"></i>
+            </button>
+        </div>
+    </div>
 </body>
 
 </html>
