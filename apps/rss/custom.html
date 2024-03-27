@@ -81,7 +81,7 @@
                 empty.setAttribute("class", "d-block");
                 loading.setAttribute("class", "d-hide");
             }
-            else if (!fetching) {
+            else if (fetching) {
                 loading.setAttribute("class", "d-block");
                 empty.setAttribute("class", "d-hide");
             }
@@ -127,8 +127,6 @@
         }
 
         function saveFeed() {
-            const formData = new FormData(form);
-            console.log(JSON.stringify(formData));
             var feed = {};
             feed.displayName = document.getElementById('name').value;
             feed.url = document.getElementById('url').value;
@@ -141,11 +139,13 @@
                 order: sortable.toArray(),
             };
             feeds.push(feed);
-
+            Util.writeStorage("rss.feeds.json",JSON.stringify(feeds), () => {
+                renderFeedList();
+                return true;
+            });
             // TODO show an error message if the feed exists instead, otherwise add and return the index
             //feeds = [...new Set(feeds)];
-            renderFeedList();
-            return true;
+            return false;
         }
 
 
