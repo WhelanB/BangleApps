@@ -28,8 +28,10 @@
         <br>
         <br>
         <input class="btn btn-primary" type="submit" value="Submit">
-    </form>
 
+
+    </form>
+    <button class="btn btn-primary" onclick="updateDevice()">Update Device</button>
     <div>
         <div id="loading">
             <div class="empty">
@@ -139,12 +141,17 @@
                 order: sortable.toArray(),
             };
             feeds.push(feed);
+
+            // TODO show an error message if the feed exists instead, otherwise add and return the index
+            //feeds = [...new Set(feeds)];
+            return updateDevice();
+        }
+
+        function updateDevice() {
             Util.writeStorage("rss.feeds.json",JSON.stringify(feeds), () => {
                 renderFeedList();
                 return true;
             });
-            // TODO show an error message if the feed exists instead, otherwise add and return the index
-            //feeds = [...new Set(feeds)];
             return false;
         }
 

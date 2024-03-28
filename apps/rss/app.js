@@ -329,6 +329,7 @@ function showItemList(items) {
 
 // Display a loading screen with the app logo and feed title
 function displayLoadingPage(feed) {
+  console.log("loading");
   layout = new Layout({
     type: "v",
     c: [
@@ -355,6 +356,7 @@ function displayLoadingPage(feed) {
 function fetchData(feed) {
   var config = feed.config;
   var conditions = `[./${config.bodyTag}/text() != "" and ./${config.titleTag}/text() != "" and ./${config.linkTag}/text() != ""]`;
+  displayLoadingPage(feed);
   Bangle.http(feed.url, {
     return: "array",
     xpath: `//${config.itemTag}${conditions}/${config.titleTag}|//${config.itemTag}${conditions}/${config.bodyTag}|//${config.itemTag}${conditions}/${config.linkTag}`,
@@ -376,16 +378,18 @@ function fetchData(feed) {
         link: data.resp[i + 1],
         desc: data.resp[i + 2],
       };
+      items[config.order[0]] = data.resp[i];
+      items[config.order[1]] = data.resp[i+1];
+      items[config.order[2]] = data.resp[i+2];
       //mainmenu = Object.assign(mainmenu, { itemTitle : () => { display2(index) } });
     }
+    showItemList(items);
   });
 }
 
 // Open a feed - display the loading screen, fetch the XML data and display the items
 function openFeed(feed) {
-  displayLoadingPage(feed);
   fetchData(feed);
-  showItemList(items);
 }
 
 // Entrypoint into the app - shows the list of registered feeds
