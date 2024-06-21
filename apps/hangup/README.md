@@ -1,0 +1,2 @@
+# Hang Up
+A small app that sends a message to Gadgetbridge to hang up a call. Use this app in conjunction with apps like Pattern Launcher or Quick Center to quickly hang up a call from the clock face.

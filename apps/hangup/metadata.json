@@ -1,0 +1,15 @@
+{ "id": "hangup",
+  "name": "Hang Up",
+  "shortName":"Hang Up",
+  "version":"0.01",
+  "description": "Quickly hang up a call",
+  "icon": "app.png",
+  "tags": "",
+  "dependencies": {"android":"app"},
+  "supports": ["BANGLEJS","BANGLEJS2"],
+  "readme": "README.md",
+  "storage": [
+    {"name":"hangup.app.js","url":"app.js"},
+    {"name":"hangup.img","url":"app-icon.js","evaluate":true}
+  ]
+}
