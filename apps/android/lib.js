@@ -57,7 +57,7 @@ exports.gbHandler = (event) => {
       else if (event.cmd === "outgoing")
         Object.assign(call, {positive:false, negative:true, body:/*LANG*/"Outgoing call\n"+event.number});
       else if (event.cmd === "end")
-        Object.assign(call, {positive:false, negative:false, body:/*LANG*/"Call ended\n"+event.number}
+        Object.assign(call, {positive:false, negative:false, body:/*LANG*/"Call ended\n"+event.number});
       Object.assign(event, call);
       require("messages").pushMessage(event);
     },
