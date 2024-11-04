@@ -44,13 +44,21 @@ exports.gbHandler = (event) => {
     "musicinfo" : function() {
       require("messages").pushMessage(Object.assign(event, {t:"modify",id:"music",title:"Music"}));
     },
-    // {"t":"call","cmd":"incoming/end","name":"Bob","number":"12421312"})
+    // {"t":"call","cmd":"incoming/outgoing/end","name":"Bob","number":"12421312"})
     "call" : function() {
-      Object.assign(event, {
-        t:event.cmd=="incoming"?"add":"remove",
+      var call = {
+        t:event.cmd=="end"?"remove":"add",
+        dir:event.cmd,
         id:"call", src:"Phone",
-        positive:true, negative:true,
-        title:event.name||/*LANG*/"Call", body:/*LANG*/"Incoming call\n"+event.number});
+        title:event.name||/*LANG*/"Call",
+      };
+      if (event.cmd === "incoming")
+        Object.assign(call, {positive:true, negative:true, body:/*LANG*/"Incoming call\n"+event.number});
+      else if (event.cmd === "outgoing")
+        Object.assign(call, {positive:false, negative:true, body:/*LANG*/"Outgoing call\n"+event.number});
+      else if (event.cmd === "end")
+        Object.assign(call, {positive:false, negative:false, body:/*LANG*/"Call ended\n"+event.number}
+      Object.assign(event, call);
       require("messages").pushMessage(event);
     },
     "canned_responses_sync" : function() {
