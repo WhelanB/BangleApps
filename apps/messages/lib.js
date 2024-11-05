@@ -199,16 +199,19 @@ exports.status = function(withMessage) {
  * @param {string} msgSrc Message src to buzz for
  * @return {Promise} Resolves when initial buzz finishes (there might be repeat buzzes later)
  */
-exports.buzz = function(msgSrc) {
+exports.buzz = function(msg) {
   exports.stopBuzz(); // cancel any previous buzz timeouts
   if ((require("Storage").readJSON("setting.json", 1) || {}).quiet) return Promise.resolve(); // never buzz during Quiet Mode
   const msgSettings = require("Storage").readJSON("messages.settings.json", true) || {};
   let pattern;
   let repeat;
+  let msgSrc = msg.src;
   if (msgSrc && msgSrc.toLowerCase()==="phone") {
-    // special vibration pattern for incoming calls
-    pattern = msgSettings.vibrateCalls;
-    repeat = msgSettings.repeatCalls;
+    if (msg && msg.dir == "incoming") {
+      // special vibration pattern for incoming calls
+      pattern = msgSettings.vibrateCalls;
+      repeat = msgSettings.repeatCalls;
+    }
   } else {
     pattern = msgSettings.vibrate;
     repeat = msgSettings.repeat;
