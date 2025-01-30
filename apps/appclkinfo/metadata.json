@@ -1,0 +1,17 @@
+{ "id": "appclkinfo",
+  "name": "App ClockInfo Shortcuts",
+  "shortName": "appclkinfo",
+  "version": "0.01",
+  "description": "Add quick shortcuts to launch apps as ClockInfo modules on your Clock",
+  "icon": "app.png",
+  "screenshots": [{"url":"add_apps_screenshot.png"}, {"url":"agenda_apps_screenshot.png"}],
+  "tags": "clkinfo,clockinfo",
+  "supports": ["BANGLEJS2"],
+  "readme": "README.md",
+  "storage": [
+    { "name": "appclkinfo.app.js", "url": "app.js" },
+    { "name": "appclkinfo.img", "url": "app-icon.js", "evaluate": true }
+    {"name":"appclkinfo.clkinfo.js","url":"clkinfo.js"}
+  ],
+  "data": [{"name":"appclkinfo.apps.json"}]
+}
