@@ -42,6 +42,3 @@
     items: items
   };
 })
-
-ANTON CLOCK
-A TEA TIMER
