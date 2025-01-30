@@ -25,7 +25,7 @@
     items.push({
         name: "Apps",
         img: "GBiBAAAAAAAAAAAAAA//8B//+BgAGBgAGBgYGBgYGBgYGBgYGBn/mBn/mBgYGBgYGBgYGBgYGBgAGBgAGB//+A//8AAAAAAAAAAAAA==",
-        src: "setting.app.js",
+        src: "appclkinfo.app.js",
         get : function() { 
             return { 
                 text : this.name,
