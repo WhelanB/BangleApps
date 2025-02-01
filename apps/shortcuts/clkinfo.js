@@ -25,7 +25,7 @@
     items.push({
         name: "Shortcut",
         img: "GBiBAAAAAAAAAAAAAA//8B//+BgAGBgAGBgYGBgYGBgYGBgYGBn/mBn/mBgYGBgYGBgYGBgYGBgAGBgAGB//+A//8AAAAAAAAAAAAA==",
-        src: "appclkinfo.app.js",
+        src: "shortcuts.app.js",
         get : function() { 
             return { 
                 text : this.name,
