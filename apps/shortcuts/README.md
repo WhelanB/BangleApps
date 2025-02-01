@@ -1,7 +1,12 @@
-# Shortcuts
+# App ClockInfo Shortcuts
 
-Any installed app can be assigned to BTN1 and BTN3 and launched directly from compatible watch faces. This works with any watch face that uses `Bangle.setUI("clock")`.
+An app that allows you to create custom ClockInfo shortcuts that launch a chosen app
 
-## Credits
+## Create a Shortcut
+If you haven't yet created a shortcut, when using a clock that supports clockinfo a custom clockinfo will appear with a ``+`` button that launches the app.
 
-<a target="_blank" href="https://icons8.com/icon/i1z7pQ2orcJk/shortcut">Shortcut</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+If you have existing shortcuts, launch the app to add and delete shortcuts
+
+When adding a shortcut, first select the app you which to use, then select the icon you wish to register to the shortcut.
+
+App icons can't be used as clockinfo icons must be 24x24 1bpp, but this app includes a number of useful icons that can be used instead.
